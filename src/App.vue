@@ -79,8 +79,7 @@ export default {
   div.container {
     padding-top: 3vmin;
     margin: auto;
-    width: 80vmin;
-    padding: 2vmin;
+    width: 84vmin;
   }
 
   div.board {
