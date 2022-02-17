@@ -2,7 +2,13 @@
   <div class="container">
     <div class="board">
       <div class="row" v-for="row in board" :key="row.rowNum">
-        <base-cell v-for="entry in row.rowEntries" :key="entry.coord" :cellData=entry :boardSize=boardSize>
+        <base-cell
+          v-for="entry in row.rowEntries"
+          :key="entry.coord"
+          :cellData=entry
+          :boardSize=boardSize
+          @update-cell="updateCellValue"
+        >
         </base-cell>
       </div>
     </div>
@@ -46,6 +52,10 @@ export default {
       )
       return output
     },
+    updateCellValue(enteredValue, cellData) {
+      this.board[cellData.row].rowEntries[cellData.col].value = enteredValue
+      console.log(this.board[cellData.row].rowEntries[cellData.col])
+    }
   },
 };
 </script>

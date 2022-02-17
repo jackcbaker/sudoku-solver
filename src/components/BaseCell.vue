@@ -1,6 +1,6 @@
 <template>
     <div v-bind:class="isInnerSquareEdge">
-        <input class="entry" maxlength="1" size="1" v-model="cellEntry" />
+        <input class="entry" maxlength="1" size="1" v-model="cellValue" @keyup="emitValue" />
     </div>
 </template>
 
@@ -11,7 +11,7 @@ export default {
   props: ['boardSize', 'cellData'],
   data() {
     return {
-      cellEntry: ""
+      cellValue: ""
     }
   },
   computed: {
@@ -28,6 +28,16 @@ export default {
     }
   },
   methods: {
+    emitValue: function() {
+      // Make sure if value has been deleted it is wiped from data
+      if (this.cellValue == "") {
+        this.$emit('updateCell', this.cellValue, this.cellData)
+      } else if ((this.cellValue >= '0' && this.cellValue <= '9')) {
+        this.$emit('updateCell', this.cellValue, this.cellData)
+      } else {
+        this.cellValue = ""
+      }
+    },
   },
 };
 </script>
