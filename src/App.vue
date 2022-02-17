@@ -12,6 +12,10 @@
         </base-cell>
       </div>
     </div>
+    <div class="toolbar">
+      <button @click="solveBoard" v-bind:class="{solving: isSolving}">{{ solveButtonText }}</button>
+      <button @click="generateRandom" class="generate">Generate</button>
+    </div>
   </div>
 </template>
 
@@ -25,13 +29,19 @@ export default {
     return {
       boardSize: 9,
       board: this.initialiseBoardData(9),
-      isSolving: false,
       solveButtonText: "Solve",
     };
   },
   computed: {
     cellWidth: function() {
       return 100 / (this.boardSize) + '%'
+    },
+    isSolving: function() {
+      if (this.solveButtonText == "Solving...") {
+        return true
+      } else {
+        return false
+      }
     }
   },
   methods: {
@@ -52,6 +62,11 @@ export default {
       )
       return output
     },
+    solveBoard() {
+      if (this.solveButtonText == "Solve") {
+        this.solveButtonText = "Solving..."
+      }
+    },
     updateCellValue(enteredValue, cellData) {
       this.board[cellData.row].rowEntries[cellData.col].value = enteredValue
       console.log(this.board[cellData.row].rowEntries[cellData.col])
@@ -62,14 +77,16 @@ export default {
 
 <style scoped>
   div.container {
-    padding-top: 5vmin;
+    padding-top: 3vmin;
+    margin: auto;
+    width: 80vmin;
+    padding: 2vmin;
   }
 
   div.board {
-    margin: auto;
     width: 80vmin;
     height: 80vmin;
-    background-color: chartreuse;
+    background-color: rgb(8, 146, 8);
     padding: 2vmin;
   }
 
@@ -80,5 +97,45 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  button {
+    background-color: orange;
+    border: none;
+    color: white;
+    padding: 1vmin;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 4vmin;
+    margin-top: 1.5vmin;
+    height: 8vmin;
+    width: 40%;
+    cursor: pointer;
+    border-radius: 8px;
+    transition-duration: .4s;
+    border: 4px solid orange;
+  }
+
+  button:hover {
+    background-color: rgb(250, 207, 127);
+    color: gray;
+  }
+
+  button.solving {
+    background-color: rgb(250, 207, 127);
+    cursor: default;
+    color: gray;
+  }
+
+  button.generate {
+    margin-right: 0;
+    margin-left: auto;
+    float: right;
+  }
+
+  div.toolbar {
+    width: 100%;
+    display: flex;
   }
 </style>

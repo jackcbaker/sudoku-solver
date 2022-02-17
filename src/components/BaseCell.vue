@@ -32,7 +32,7 @@ export default {
       // Make sure if value has been deleted it is wiped from data
       if (this.cellValue == "") {
         this.$emit('updateCell', this.cellValue, this.cellData)
-      } else if ((this.cellValue >= '0' && this.cellValue <= '9')) {
+      } else if ((this.cellValue >= '1' && this.cellValue <= '9')) {
         this.$emit('updateCell', this.cellValue, this.cellData)
       } else {
         this.cellValue = ""
