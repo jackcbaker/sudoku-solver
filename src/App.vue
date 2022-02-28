@@ -16,6 +16,7 @@
       <button @click="solveBoard" v-bind:class="{solving: isSolving}">{{ solveButtonText }}</button>
       <button @click="generateRandom" class="generate">Generate</button>
     </div>
+    <p>{{ solveStatus }}</p>
   </div>
 </template>
 
@@ -30,6 +31,8 @@ export default {
       boardSize: 9,
       board: this.initialiseBoardData(9),
       solveButtonText: "Solve",
+      solveStatus: "No solve request made",
+      solverURL: "http://127.0.0.1:5000"
     };
   },
   computed: {
@@ -62,9 +65,34 @@ export default {
       )
       return output
     },
-    solveBoard() {
+    async solveBoard() {
+      let solveRoute = "/solve"
+      let solveResponse = undefined
       if (this.solveButtonText == "Solve") {
         this.solveButtonText = "Solving..."
+      }
+      try {
+        solveResponse = await fetch(
+          `${this.solverURL}${solveRoute}`,
+          {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.board)
+          }
+        )
+      } catch (error) {
+        // Catch e.g. a 404
+        console.log(error.message)
+        this.solveButtonText = `Solve error`
+        return
+      }
+      console.log(solveResponse.ok)
+      if (!solveResponse.ok) {
+        this.solveButtonText = `Solve error: ${solveResponse.status}`
+      } else {
+        this.solveButtonText = await solveResponse.text()
       }
     },
     updateCellValue(enteredValue, cellData) {
