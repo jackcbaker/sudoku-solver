@@ -22,8 +22,9 @@ def solve():
         response = flask.make_response("Solve request received :)")
         return response
     elif request.method == "POST":
-        app.logger.info(request.json)
-        validation = validator.validate_board(board=request.json, app_logger=app.logger)
+        board = request.json
+        app.logger.info("Requested board: %s", board)
+        validation = validator.validate_board(board=board, app_logger=app.logger)
         if not validation:
             return "Invalid board", 400
         return "Post received :)", 200
