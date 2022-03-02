@@ -1,6 +1,8 @@
 from typing import List, Dict, Any
 import logging
 
+from sudoku_solver import constants
+
 
 def validate_board(board: List[Dict[str, Any]], app_logger: logging.Logger):
     app_logger.info("Validating board...")
@@ -77,7 +79,7 @@ def check_columns(board: List[Dict[str, Any]], app_logger: logging.Logger):
 def check_inner_square(board: List[Dict[str, Any]], app_logger: logging.Logger):
     """Check each inner square contains values that are all distinct"""
     board_size = len(board)
-    if board_size != 9:
+    if board_size != constants.BOARD_SIZE:
         app_logger.error("Only implemented for board size 9")
     inner_squares = {}
     for inner_square in range(board_size):
