@@ -18,11 +18,21 @@ class SudokuModel:
         self.variables_by_coord = {}
         self.output_board: List[Dict[str, Any]] = []
         self.cp_model = cp_model.CpModel()
+        self.is_solved = False
 
     def build(self, board: List[Dict[str, Any]]):
         """Build cp-model for sudoku"""
         self._generate_variables(board)
-        self._generate_variables(board)
+        self._generate_constraints()
+
+    def get_output_board(self, solver) -> List[Dict[str, Any]]:
+        """Fetch output board from solved model"""
+        output_board: List[Dict[str, Any]] = deepcopy(self.output_board)
+        assert self.is_solved is True, "Model needs to be solved before fetching output"
+        for row_dict in output_board:
+            for col_dict in row_dict['rowEntries']:
+                col_dict['value'] = solver.Value(col_dict['value'])
+        return output_board
 
     def _generate_variables(self, board: List[Dict[str, Any]]):
         """Generate variables, fixing them if they are set already. Add to containers."""
@@ -41,9 +51,9 @@ class SudokuModel:
                 )
                 self.variables_by_coord[(row, col,)] = var_current
                 # Add variable to correct container
-                self.rows[row] = var_current
-                self.columns[col] = var_current
-                self.inner_squares[get_inner_square(col_dict)] = var_current
+                self.rows[row].append(var_current)
+                self.columns[col].append(var_current)
+                self.inner_squares[get_inner_square(col_dict)].append(var_current)
                 # If entry defined. Add as constraint.
                 if col_dict['value'] != "":
                     self.cp_model.Add(var_current == int(col_dict['value']))
