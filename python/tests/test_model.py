@@ -22,7 +22,7 @@ class BoardOutput:
                 self.inner_squares[int(get_inner_square(column_entries))].append(
                     column_entries['value']
                 )
-                self.variables_by_coord[row, column] = column_entries['value']
+                self.variables_by_coord[int(row), int(column)] = column_entries['value']
 
 
 def build_board_from_triples(entries: List[int]) -> List[Dict[str, Any]]:
@@ -73,3 +73,6 @@ def test_sudoku_model():
         assert all_different(col_entries)
     for _, inner_square_entries in test_board.inner_squares.items():
         assert all_different(inner_square_entries)
+    assert test_board.variables_by_coord[(1, 1)] == 1
+    assert test_board.variables_by_coord[(8, 8)] == 4
+    assert test_board.variables_by_coord[(5, 3)] == 8
