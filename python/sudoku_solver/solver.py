@@ -14,4 +14,3 @@ def solve_sudoku(board: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     solver.Solve(model.cp_model)
     model.is_solved = True
     return model.get_output_board(solver)
-    
