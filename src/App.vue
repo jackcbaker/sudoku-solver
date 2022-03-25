@@ -92,7 +92,15 @@ export default {
       if (!solveResponse.ok) {
         this.solveButtonText = `Solve error: ${solveResponse.status}`
       } else {
-        this.solveButtonText = await solveResponse.text()
+        let output_board = await solveResponse.text()
+        this.solveButtonText = "Solve successful"
+        console.log(this.board)
+        let parsed_board = JSON.parse(output_board)
+        console.log(parsed_board)
+        // for (let row of this.board) {
+        //   for (let cell of row['rowEntries']) {
+        //   }
+        // }
       }
     },
     updateCellValue(enteredValue, cellData) {

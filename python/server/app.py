@@ -1,35 +1,35 @@
 import logging
 
 import flask
-from flask import request
+from flask import request, jsonify
 from flask_cors import CORS
 
-from sudoku_solver import validator
+from sudoku_solver import validator, solver
 
 
-FRONTEND_URL = "http://127.0.0.1:8080"
+FRONTEND_URL = "http://localhost:8080"
 
 
 app = flask.Flask(__name__)
 CORS(app, origins=f"{FRONTEND_URL}")
 
 
-@app.route("/solve", methods=["GET", "POST"])
+@app.route("/solve", methods=["POST"])
 def solve():
     """Solve the Sudoku with the given input"""
-    if request.method == "GET":
-        app.logger.info("getting...")
-        response = flask.make_response("Solve request received :)")
-        return response
-    elif request.method == "POST":
+    if request.method == "POST":
         board = request.json
         app.logger.info("Requested board: %s", board)
         validation = validator.validate_board(board=board, app_logger=app.logger)
         if not validation:
             return "Invalid board", 400
-        return "Post received :)", 200
+        output_board = solver.solve_sudoku(board=board, app_logger=app.logger)
+        # If output_board is None there was a problem with solve
+        if output_board is None:
+            return "Error solving board", 500
+        return jsonify(output_board), 200
     else:
-        response = flask.make_response("Request error", 500)
+        response = flask.make_response("POST requests only", 400)
         return response
 
 

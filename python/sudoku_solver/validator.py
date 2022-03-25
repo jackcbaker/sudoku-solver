@@ -44,7 +44,7 @@ def check_rows(board: List[Dict[str, Any]], app_logger: logging.Logger):
         # Check they're all different
         all_different = len(set(squares)) == len(squares)
         if not all_different:
-            app_logger.info(
+            app_logger.warning(
                 "Row number '%s' invalid on board with entries %s",
                 row['rowNum'],
                 squares
@@ -67,7 +67,7 @@ def check_columns(board: List[Dict[str, Any]], app_logger: logging.Logger):
         # Check they're all different
         all_different = len(set(column_entries)) == len(column_entries)
         if not all_different:
-            app_logger.info(
+            app_logger.warning(
                 "Column number '%s' invalid on board with entries %s",
                 column_number,
                 column_entries
@@ -93,7 +93,7 @@ def check_inner_square(board: List[Dict[str, Any]], app_logger: logging.Logger):
         # Check they're all different
         all_different = len(set(inner_square_entries)) == len(inner_square_entries)
         if not all_different:
-            app_logger.info(
+            app_logger.warning(
                 "Inner square number '%s' invalid on board with entries %s",
                 inner_square_number,
                 inner_square_entries

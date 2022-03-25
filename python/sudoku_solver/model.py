@@ -30,8 +30,9 @@ class SudokuModel:
         output_board: List[Dict[str, Any]] = deepcopy(self.output_board)
         assert self.is_solved is True, "Model needs to be solved before fetching output"
         for row_dict in output_board:
+            row_dict['rowNum'] = int(row_dict['rowNum'])
             for col_dict in row_dict['rowEntries']:
-                col_dict['value'] = solver.Value(col_dict['value'])
+                col_dict['value'] = str(solver.Value(col_dict['value']))
         return output_board
 
     def _generate_variables(self, board: List[Dict[str, Any]]):
