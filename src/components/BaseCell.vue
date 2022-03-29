@@ -11,7 +11,7 @@ export default {
   props: ['boardSize', 'cellData'],
   data() {
     return {
-      cellValue: ""
+      cellValue: this.cellData['value']
     }
   },
   computed: {

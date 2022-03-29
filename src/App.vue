@@ -1,5 +1,10 @@
 <template>
   <div class="container">
+    <div class="alertContainer">
+      <span class="alerts">
+      </span>
+      <button class="alerts">OK</button>
+    </div>
     <div class="board">
       <div class="row" v-for="row in board" :key="row.rowNum">
         <base-cell
@@ -13,10 +18,17 @@
       </div>
     </div>
     <div class="toolbar">
-      <button @click="solveBoard" v-bind:class="{solving: isSolving}">{{ solveButtonText }}</button>
-      <button @click="generateRandom" class="generate">Generate</button>
+      <button
+        @click="solveBoard"
+        class="bottomButtons"
+        v-bind:class="{solving: isSolving}"
+      >
+        {{ solveButtonText }}
+      </button>
+      <button @click="resetBoard" class="bottomButtons resetButton">
+        Reset
+      </button>
     </div>
-    <p>{{ solveStatus }}</p>
   </div>
 </template>
 
@@ -32,7 +44,8 @@ export default {
       board: this.initialiseBoardData(9),
       solveButtonText: "Solve",
       solveStatus: "No solve request made",
-      solverURL: "http://127.0.0.1:5000"
+      solverURL: "http://127.0.0.1:5000",
+      errors: ""
     };
   },
   computed: {
@@ -40,7 +53,7 @@ export default {
       return 100 / (this.boardSize) + '%'
     },
     isSolving: function() {
-      if (this.solveButtonText == "Solving...") {
+      if (this.solveButtonText != "Solve") {
         return true
       } else {
         return false
@@ -95,17 +108,17 @@ export default {
         let output_board = await solveResponse.text()
         this.solveButtonText = "Solve successful"
         console.log(this.board)
-        let parsed_board = JSON.parse(output_board)
-        console.log(parsed_board)
-        // for (let row of this.board) {
-        //   for (let cell of row['rowEntries']) {
-        //   }
-        // }
+        this.board = JSON.parse(output_board)
       }
     },
     updateCellValue(enteredValue, cellData) {
       this.board[cellData.row].rowEntries[cellData.col].value = enteredValue
       console.log(this.board[cellData.row].rowEntries[cellData.col])
+    },
+    resetBoard() {
+      this.board = this.initialiseBoardData(this.boardSize)
+      this.solveButtonText = "Solve"
+      this.errors = ""
     }
   },
 };
@@ -134,7 +147,7 @@ export default {
     align-items: center;
   }
 
-  button {
+  button.bottomButtons {
     background-color: orange;
     border: none;
     color: white;
@@ -152,7 +165,7 @@ export default {
     border: 4px solid orange;
   }
 
-  button:hover {
+  button.bottomButtons:hover {
     background-color: rgb(250, 207, 127);
     color: gray;
   }
@@ -163,7 +176,7 @@ export default {
     color: gray;
   }
 
-  button.generate {
+  button.resetButton {
     margin-right: 0;
     margin-left: auto;
     float: right;
@@ -172,5 +185,41 @@ export default {
   div.toolbar {
     width: 100%;
     display: flex;
+  }
+
+  div.alertContainer {
+    margin: auto;
+    margin-bottom: 3vmin;
+    width: 50vmin;
+    height: 4vmin;
+    padding: 0;
+  }
+
+  span.alerts {
+    width: 89%;
+    height: 100%;
+    border-radius: 8px;
+    background: #fab7b2;
+    border: 2px solid #a40d02;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+  }
+
+  button.alerts {
+    border-radius: 3px;
+    background: #a40d02;
+    padding: 0;
+    width: 10%;
+    height: 100%;
+    margin: 0;
+    float: right;
+    border: 2px solid #a40d02;
+    color: white;
+  }
+
+  button.alerts:hover {
+    background-color: #fab7b2;
+    color: gray;
   }
 </style>
