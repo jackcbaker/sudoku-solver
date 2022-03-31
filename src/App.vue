@@ -1,9 +1,12 @@
 <template>
   <div class="container">
-    <div class="alertContainer">
+    <div class="alertContainer" v-if="errors">
       <span class="alerts">
+        {{ errors }}
       </span>
-      <button class="alerts">OK</button>
+      <span class="alertsButton" @click="dismissError">
+        OK
+      </span>
     </div>
     <div class="board">
       <div class="row" v-for="row in board" :key="row.rowNum">
@@ -98,12 +101,22 @@ export default {
       } catch (error) {
         // Catch e.g. a 404
         console.log(error.message)
+        this.errors = "Error: problem solving board (HTTP error 500)"
         this.solveButtonText = `Solve error`
         return
       }
       console.log(solveResponse.ok)
       if (!solveResponse.ok) {
-        this.solveButtonText = `Solve error: ${solveResponse.status}`
+        console.log(solveResponse.status)
+        let output = await solveResponse.text()
+        if (output == "Invalid board") {
+          this.errors = "Error: invalid board. Make sure you have not entered the same digit in a row, column or square."
+          this.solveButtonText = `Solve error`
+        } else {
+          this.errors = "Error: problem solving board (HTTP error 500)"
+          this.solveButtonText = `Solve error`
+        }
+        return
       } else {
         let output_board = await solveResponse.text()
         this.solveButtonText = "Solve successful"
@@ -119,6 +132,10 @@ export default {
       this.board = this.initialiseBoardData(this.boardSize)
       this.solveButtonText = "Solve"
       this.errors = ""
+    },
+    dismissError() {
+      this.errors = ""
+      this.resetBoard()
     }
   },
 };
@@ -189,36 +206,42 @@ export default {
 
   div.alertContainer {
     margin: auto;
+    display: flex;
     margin-bottom: 3vmin;
     width: 50vmin;
-    height: 4vmin;
+    height: 3vmin;
     padding: 0;
   }
 
   span.alerts {
-    width: 89%;
+    width: 90%;
     height: 100%;
-    border-radius: 8px;
+    border-radius: 3px 0px 0px 3px;
     background: #fab7b2;
     border: 2px solid #a40d02;
+    border-right: 0;
     margin: 0;
-    padding: 0;
+    padding: 2%;
     display: inline-block;
+    text-align: center;
+    font-size: 1.2em;
   }
 
-  button.alerts {
-    border-radius: 3px;
-    background: #a40d02;
-    padding: 0;
+  span.alertsButton {
     width: 10%;
     height: 100%;
-    margin: 0;
-    float: right;
+    border-radius: 0px 3px 3px 0px;
+    background: #a40d02;
     border: 2px solid #a40d02;
+    margin: 0;
+    padding: 2%;
+    display: inline-block;
+    text-align: center;
     color: white;
+    font-size: 2em;
   }
 
-  button.alerts:hover {
+  span.alertsButton:hover {
     background-color: #fab7b2;
     color: gray;
   }

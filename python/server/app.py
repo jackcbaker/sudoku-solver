@@ -38,3 +38,7 @@ def oops():
     """Solve the Sudoku with the given input"""
     response = flask.make_response("Oops!", 500)
     return response
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
