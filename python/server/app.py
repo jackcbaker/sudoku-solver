@@ -7,7 +7,7 @@ from flask_cors import CORS
 from sudoku_solver import validator, solver
 
 
-FRONTEND_URL = "http://localhost:8080"
+FRONTEND_URL = "http://127.0.0.1:8080"
 
 
 app = flask.Flask(__name__)
@@ -17,6 +17,7 @@ CORS(app, origins=f"{FRONTEND_URL}")
 @app.route("/solve", methods=["POST"])
 def solve():
     """Solve the Sudoku with the given input"""
+    app.logger.debug("Request metadata: %s", request.environ)
     if request.method == "POST":
         board = request.json
         app.logger.info("Requested board: %s", board)
